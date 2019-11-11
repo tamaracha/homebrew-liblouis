@@ -1,39 +1,47 @@
-require 'formula'
-
 class Liblouis < Formula
-  homepage 'http://www.liblouis.org'
-  url 'http://liblouis.googlecode.com/files/liblouis-2.5.2.tar.gz'
-  version '2.5.2'
-  sha1 '93437f3c3a9a178ad08bdf6daca2a82cf3df2cc2'
+  desc "Open-source braille translator and back-translator."
+  homepage "http://liblouis.org"
 
-  depends_on 'pkg-config' => :build
+  option "with-ucs4", "Enable 4 byte-wide characters"
+  option "with-python", "compile with Python bindings"
 
-  option 'enable-ucs4', 'Enable 4 byte-wide characters.'
-  option 'with-python', 'Build Python bindings.'
+  stable do
+    url "https://github.com/liblouis/liblouis/releases/download/v3.11.0/liblouis-3.11.0.tar.gz"
+    sha256 "b802aba0bff49636907ca748225e21c56ecf3f3ebc143d582430036d4d9f6259"
+    depends_on "pkg-config" => :build
+    depends_on "python" => :optional
+  end
+  head do
+    url "https://github.com/liblouis/liblouis.git"
+    depends_on "autoconf" => :build
+    depends_on "automake" => :build
+    depends_on "Libtool" => :build
+    depends_on "pkg-config" => :build
+    depends_on "python" => :optional
+  end
 
   def install
+    if build.head?
+      system "./autogen.sh"
+    end
     args = ["--disable-debug",
             "--disable-dependency-tracking",
+            "--disable-silent-rules",
             "--prefix=#{prefix}"]
-    args << "--enable-ucs4" if build.include? 'enable-ucs4'
-
+    args << "--enable-ucs4" if build.with? "ucs4"
     system "./configure", *args
     system "make"
     system "make check"
     system "make install"
-
-    if build.include? 'with-python'
-      python_lib = lib/which_python/'site-packages'
-      python_lib.mkpath
-      ENV.append 'PYTHONPATH', python_lib
-      ENV.append 'LD_LIBRARY_PATH', lib
-      cd 'python' do
-        system "python", "setup.py", "install", "--install-lib=#{python_lib}"
+    if build.with? "python"
+      cd "python" do
+        system "python3", *Language::Python.setup_install_args(prefix)
       end
     end
   end
 
-  def which_python
-    "python" + `python -c 'import sys;print(sys.version[:3])'`.strip
+  test do
+    o, s = Open3.capture2(bin/"lou_translate", "unicode.dis,de-g2.ctb", :stdin_data=>"42")
+    assert_equal o, "⠼⠙⠃"
   end
 end
