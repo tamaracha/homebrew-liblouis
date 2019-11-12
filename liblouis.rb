@@ -7,6 +7,7 @@ class Liblouis < Formula
     sha256 "b802aba0bff49636907ca748225e21c56ecf3f3ebc143d582430036d4d9f6259"
     depends_on "help2man" => :build
     depends_on "pkg-config" => :build
+    depends_on "python"
   end
   head do
     url "https://github.com/liblouis/liblouis.git"
@@ -15,9 +16,8 @@ class Liblouis < Formula
     depends_on "help2man" => :build
     depends_on "libtool" => :build
     depends_on "pkg-config" => :build
+    depends_on "python"
   end
-
-  option "with-python", "compile with Python bindings"
 
   def install
     if build.head?
@@ -30,10 +30,8 @@ class Liblouis < Formula
     system "make"
     system "make", "check"
     system "make", "install"
-    if build.with? "python"
-      cd "python" do
-        system "python3", *Language::Python.setup_install_args(prefix)
-      end
+    cd "python" do
+      system "python3", *Language::Python.setup_install_args(prefix)
     end
   end
 
@@ -44,7 +42,7 @@ class Liblouis < Formula
   end
 
   test do
-    o, = Open3.capture2(bin/"lou_translate", "unicode.dis,de-g2.ctb", :stdin_data=>"42")
+    o, = Open3.capture2(bin/"lou_translate", "unicode.dis,en-us-g2.ctb", :stdin_data=>"42")
     assert_equal o, "⠼⠙⠃"
   end
 end
