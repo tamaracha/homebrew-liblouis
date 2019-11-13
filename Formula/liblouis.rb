@@ -9,6 +9,11 @@ class Liblouis < Formula
     depends_on "pkg-config" => :build
     depends_on "python"
   end
+  bottle do
+    root_url "https://dl.bintray.com/tamaracha/bottles-liblouis"
+    sha256 "1a12f120e74848bba569605857d48364c392e97267f2c5a19bd8ab355869e5a7" => :catalina
+  end
+
   head do
     url "https://github.com/liblouis/liblouis.git"
     depends_on "autoconf" => :build
