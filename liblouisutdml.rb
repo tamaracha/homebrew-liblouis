@@ -4,18 +4,25 @@ class Liblouisutdml < Formula
   url "https://github.com/liblouis/liblouisutdml/releases/download/v2.8.0/liblouisutdml-2.8.0.tar.gz"
   sha256 "97f0ecb0182f51891704bf545c92e3cc705735e86edb9b2de74027ce167760a6"
 
+  depends_on "ant" => :build
   depends_on "help2man" => :build
   depends_on "pkg-config" => :build
   depends_on "liblouis"
   uses_from_macos "libxml2"
 
   def install
+    ENV["CFLAGS"] = "-I/System/Library/Frameworks/JavaVM.framework/Headers"
     system "./configure", "--disable-debug",
                           "--disable-dependency-tracking",
                           "--disable-silent-rules",
                           "--prefix=#{prefix}"
     system "make"
     system "make", "install"
+    cd "java" do
+      system "ant"
+      mkdir "#{prefix}/java"
+      mv "jliblouisutdml.jar", "#{prefix}/java/", :force => true
+    end
   end
 
   test do
