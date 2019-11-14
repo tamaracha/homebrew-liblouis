@@ -4,6 +4,11 @@ class Liblouisutdml < Formula
   url "https://github.com/liblouis/liblouisutdml/releases/download/v2.8.0/liblouisutdml-2.8.0.tar.gz"
   sha256 "97f0ecb0182f51891704bf545c92e3cc705735e86edb9b2de74027ce167760a6"
 
+  bottle do
+    root_url "https://dl.bintray.com/tamaracha/bottles-liblouis"
+    sha256 "8407b085f5776b659e5f2abb3078e5f9f454bf317246aec2d79504b4b38915fc" => :catalina
+  end
+
   depends_on "ant" => :build
   depends_on "help2man" => :build
   depends_on "pkg-config" => :build
@@ -26,15 +31,8 @@ class Liblouisutdml < Formula
   end
 
   test do
-    # `test do` will create, run in and delete a temporary directory.
-    #
-    # This test will fail and we won't accept that! For Homebrew/homebrew-core
-    # this will need to be a test that verifies the functionality of the
-    # software. Run the test with `brew test liblouisutdml`. Options passed
-    # to `brew install` such as `--HEAD` also need to be provided to `brew test`.
-    #
-    # The installed folder is not in the path, so use the entire path to any
-    # executables being tested: `system "#{bin}/program", "do", "something"`.
-    system "false"
+    (testpath/"input.txt").write("Lorem ipsum")
+    system bin/"file2brl", "input.txt", "output.brl"
+    assert_predicate testpath/"output.brl", :exist?
   end
 end
