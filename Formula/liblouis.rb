@@ -11,7 +11,7 @@ class Liblouis < Formula
   end
   bottle do
     root_url "https://dl.bintray.com/tamaracha/bottles-liblouis"
-    sha256 "1a12f120e74848bba569605857d48364c392e97267f2c5a19bd8ab355869e5a7" => :catalina
+    sha256 "4942aa634383d34b3b409834a322047a9cdbac5d8356c2a168334acded23da96" => :catalina
   end
 
   head do
