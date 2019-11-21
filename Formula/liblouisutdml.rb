@@ -7,8 +7,7 @@ class Liblouisutdml < Formula
 
   bottle do
     root_url "https://dl.bintray.com/tamaracha/bottles-liblouis"
-    rebuild 1
-    sha256 "d19ebd0a4c1e3dfc76ed2897cdcc4d6b4b576d87f5cb818af8e674f8fbbeb992" => :catalina
+    sha256 "02195fdb162556def015ab1007e5a5ced482bda7a0527992f313350b6388653b" => :mojave
   end
 
   depends_on "ant" => :build
