@@ -3,6 +3,7 @@ class Liblouisutdml < Formula
   homepage "http://liblouis.org"
   url "https://github.com/liblouis/liblouisutdml/releases/download/v2.8.0/liblouisutdml-2.8.0.tar.gz"
   sha256 "97f0ecb0182f51891704bf545c92e3cc705735e86edb9b2de74027ce167760a6"
+  revision 1
 
   bottle do
     root_url "https://dl.bintray.com/tamaracha/bottles-liblouis"
@@ -15,6 +16,8 @@ class Liblouisutdml < Formula
   depends_on "pkg-config" => :build
   depends_on "liblouis"
   uses_from_macos "libxml2"
+
+  patch :DATA
 
   def install
     ENV["CFLAGS"] = "-I/System/Library/Frameworks/JavaVM.framework/Headers"
@@ -37,3 +40,26 @@ class Liblouisutdml < Formula
     assert_predicate testpath/"output.brl", :exist?
   end
 end
+__END__
+diff --git a/java/build.xml b/java/build.xml
+index 437f32a..a57c9d5 100644
+--- a/java/build.xml
++++ b/java/build.xml
+@@ -34,7 +34,7 @@
+   </target>
+   <target name="compile" depends="init">
+     <javac srcdir="${src}" destdir="${build}"
+-        includeantruntime="false" source="1.6" target="1.6">
++        includeantruntime="false" source="1.8" target="1.8">
+     </javac>
+   </target>
+   <target name="dist" depends="compile">
+@@ -44,7 +44,7 @@
+   </target>
+   <target name="testCompile" depends="testInit, compile">
+     <javac srcdir="${test.src}" destdir="${test.build}"
+-        includeantruntime="false" source="1.6" target="1.6" 
++        includeantruntime="false" source="1.8" target="1.8" 
+         classpathref="test_cp"/>
+   </target>
+   <target name="test" depends="testCompile">
